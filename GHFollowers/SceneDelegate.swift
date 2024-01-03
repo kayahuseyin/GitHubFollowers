@@ -20,6 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = createTabbar()
         window?.makeKeyAndVisible()
+        
+        configureNavigationBar() // green color set edildi
     }
     
     // Bu 2 fonksiyonu tek bir fonksiyonda da yazabilirdik. Fakat bunu yapabilmemiz icin 5 tane parametre olusturmamiz gerek. Bunu yapmaktansa 2 fonksiyon daha iyi.
@@ -48,6 +50,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         return tabbar
     }
+    
+    func configureNavigationBar() {
+        UINavigationBar.appearance().tintColor = .systemGreen // hepsinde olacak
+    }
+    
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

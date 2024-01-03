@@ -13,6 +13,7 @@ class SearchVC: UIViewController {
     let usernameTextField = GFTextField() // GFTextField'i cagirdik ve configure() fonksiyonunun degisikliklerini de uygulamis olduk.
     let callToActionButton = GFButton(backgroundColor: .systemGreen, title: "Get Followers")
 
+    var isUserNameEntered: Bool { return !usernameTextField.text!.isEmpty } //guard let icerisinde kullanacagiz. Logic'i boyle yapmamizin sebebi fonksiyon icerisinde kodu okurken daha kolay okunmasi icin.
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,18 @@ class SearchVC: UIViewController {
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tap)
+    }
+    
+    
+    @objc func pushFollowerListVC() {
+        guard isUserNameEntered else { // isUserNameEntered? false ise hata true ise devam
+            print("No username")
+            return
+        }
+        let followerListVC = FollowerListVC() //icerisinde username var
+        followerListVC.username = usernameTextField.text
+        followerListVC.title = usernameTextField.text
+        navigationController?.pushViewController(followerListVC, animated: true) // gecis
     }
     
     override func viewWillAppear(_ animated: Bool) { // eger viewDidLoad'da yapsaydik sadece 1 kere gizlerdi.
@@ -63,6 +76,7 @@ class SearchVC: UIViewController {
     
     func configureCallToActionButton() {
         view.addSubview(callToActionButton)
+        callToActionButton.addTarget(self, action: #selector(pushFollowerListVC), for: .touchUpInside) // Basildiginda pushFollowerListVC() calisacak
         
         NSLayoutConstraint.activate([
             callToActionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50), // trailing ve bottomlarda -
@@ -77,8 +91,7 @@ class SearchVC: UIViewController {
 
 extension SearchVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("did tap return")
+        pushFollowerListVC()
         return true
-        // 1:49:07
     }
 }
