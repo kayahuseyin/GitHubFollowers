@@ -44,7 +44,7 @@ class SearchVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) { // eger viewDidLoad'da yapsaydik sadece 1 kere gizlerdi.
         super.viewWillAppear(animated)
-        navigationController?.isNavigationBarHidden = true
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     func configureLogoImageView() {
