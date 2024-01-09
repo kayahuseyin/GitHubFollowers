@@ -7,7 +7,22 @@
 
 import Foundation
 
-struct Follower: Codable {
+struct Follower: Codable, Hashable {
     var login: String // Kesin gelecegi icin optional yapmiyoruz
     var avatarUrl: String
 }
+
+
+/* Sadece login'i hashable yapmak isteseydim:
+ 
+ struct Follower: Codable, Hashable {
+ 
+    var login: String
+    var avatarUrl: String
+ 
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(login)
+    }
+ }
+ 
+ */
