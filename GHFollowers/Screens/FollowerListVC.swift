@@ -9,12 +9,12 @@ import UIKit
 
 class FollowerListVC: UIViewController {
     
-    enum Section {
-        case main
-    }
+    enum Section { case main }
     
     var username: String!
     var followers: [Follower] = []
+    var page = 1
+    var hasMoreFollowers = true // certain conditionda false'a çevireceğiz.
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<Section, Follower>! // it has to know about section and items
@@ -23,7 +23,7 @@ class FollowerListVC: UIViewController {
         super.viewDidLoad()
         configureViewController()
         configureCollectionView()
-        getFollowers()
+        getFollowers(username: username, page: page)
         configureDataSource()
     }
     
@@ -43,19 +43,21 @@ class FollowerListVC: UIViewController {
     func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.createThreeColumnFlowLayout(in: view)) // Tum ekrani doldur
         view.addSubview(collectionView) // ilk olusturduk sonra icerisine yerlestirdik
+        collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         collectionView.register(FollowerCell.self, forCellWithReuseIdentifier: FollowerCell.reuseID)
     }
     
     
-    func getFollowers() {
-        NetworkManager.shared.getFollowers(for: username, page: 1) { [weak self] result in
+    func getFollowers(username: String, page: Int) {
+        NetworkManager.shared.getFollowers(for: username, page: page) { [weak self] result in
             // her self'i optional yapmak yerine:
             guard let self = self else { return }
             
             switch result {
             case .success(let followers):
-                self.followers = followers
+                if followers.count < 100 { self.hasMoreFollowers = false }
+                self.followers.append(contentsOf: followers)
                 self.updateData()
                 
             case .failure(let error):
@@ -82,3 +84,18 @@ class FollowerListVC: UIViewController {
     }
 }
 
+
+extension FollowerListVC: UICollectionViewDelegate {
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offsetY = scrollView.contentOffset.y // Ne kadar aşağı kaydırmış olduğum
+        let contentHeight = scrollView.contentSize.height // Content size 100 item içinki height
+        let height = scrollView.frame.size.height // Ekranım
+        
+        if offsetY > contentHeight - height {
+            guard hasMoreFollowers else { return } // true ise sayfayı arttırıp networkcall yapacağız. False ise return
+            page += 1
+            getFollowers(username: username, page: page)
+        }
+    }
+}
