@@ -16,6 +16,7 @@ class FollowerListVC: UIViewController {
     var filteredFollowers: [Follower] = []
     var page = 1
     var hasMoreFollowers = true // certain conditionda false'a çevireceğiz.
+    var isSearching = false // Kullanici arama yapiyor mu? didSelecItemAt'te ona gore arrayin icerisine gonderecegiz.
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<Section, Follower>! // it has to know about section and items
@@ -119,15 +120,28 @@ extension FollowerListVC: UICollectionViewDelegate {
             getFollowers(username: username, page: page)
         }
     }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let activeArray = isSearching ? filteredFollowers : followers // W ? T : F olarak dusunebiliriz.
+        let follower = activeArray[indexPath.item] // Hangi kullaniciya basildigini alacagiz
+        
+        let destVC = UserInfoVC()
+        destVC.username = follower.login //Pass data
+        let navController = UINavigationController(rootViewController: destVC)
+        present(navController, animated: true)
+    }
 }
 
 
 extension FollowerListVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let filter = searchController.searchBar.text else { return }
+        isSearching = true
         
         if filter.isEmpty {
             updateData(on: followers)
+            isSearching = false
         } else {
             filteredFollowers = followers.filter { $0.login.lowercased().localizedCaseInsensitiveContains(filter.lowercased()) } // $0 current follower hepsi tek tek yapilacak
             updateData(on: filteredFollowers)
@@ -135,6 +149,7 @@ extension FollowerListVC: UISearchResultsUpdating, UISearchBarDelegate {
     }
     // There is a bug that still shows filtered followers when the filter text deleted with keyboard instead of pressing cancel
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        isSearching = false
         updateData(on: self.followers)
     }
 }
