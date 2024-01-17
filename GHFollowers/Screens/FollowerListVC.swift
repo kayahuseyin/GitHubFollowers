@@ -124,10 +124,14 @@ extension FollowerListVC: UICollectionViewDelegate {
 
 extension FollowerListVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let filter = searchController.searchBar.text, !filter.isEmpty else { return } // filtre bossa hic bir control yapilmayacak
+        guard let filter = searchController.searchBar.text else { return }
         
-        filteredFollowers = followers.filter { $0.login.lowercased().localizedCaseInsensitiveContains(filter.lowercased()) } // $0 current follower hepsi tek tek yapilacak
-        updateData(on: filteredFollowers)
+        if filter.isEmpty {
+            updateData(on: followers)
+        } else {
+            filteredFollowers = followers.filter { $0.login.lowercased().localizedCaseInsensitiveContains(filter.lowercased()) } // $0 current follower hepsi tek tek yapilacak
+            updateData(on: filteredFollowers)
+        }
     }
     // There is a bug that still shows filtered followers when the filter text deleted with keyboard instead of pressing cancel
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
