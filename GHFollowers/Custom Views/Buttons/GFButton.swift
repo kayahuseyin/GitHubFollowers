@@ -32,4 +32,11 @@ class GFButton: UIButton {
         titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline) // bold
         translatesAutoresizingMaskIntoConstraints = false // olusturdugum her buton icin tekrar tekrar yapmama gerek kalmayacak.
     }
+    
+    
+    func set(backgroundColor: UIColor, title: String) {
+        self.backgroundColor = backgroundColor
+        setTitle(title, for: .normal)
+    }
+    
 }
