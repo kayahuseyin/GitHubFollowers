@@ -41,7 +41,7 @@ class GFItemInfoView: UIView {
         
         NSLayoutConstraint.activate([
             symbolImageView.topAnchor.constraint(equalTo: self.topAnchor),
-            symbolImageView.leadingAnchor.constraint(equalTo: self.leftAnchor),
+            symbolImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             symbolImageView.widthAnchor.constraint(equalToConstant: 20),
             symbolImageView.heightAnchor.constraint(equalToConstant: 20),
             
@@ -58,7 +58,7 @@ class GFItemInfoView: UIView {
     }
     
     
-    func setInfoType(itemInfoType: ItemInfoType, withCount count: Int) {
+    func set(itemInfoType: ItemInfoType, withCount count: Int) {
         switch itemInfoType {
         case .repos:
             symbolImageView.image = UIImage(systemName: SFSymbols.repos)
