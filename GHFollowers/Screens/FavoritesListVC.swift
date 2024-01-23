@@ -19,6 +19,12 @@ class FavoritesListVC: UIViewController {
     }
     
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        getFavorites()
+    }
+
+    
     func configureViewController() {
         view.backgroundColor = .systemBackground
         title = "Favorites"
