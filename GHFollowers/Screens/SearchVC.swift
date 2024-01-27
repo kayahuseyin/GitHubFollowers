@@ -26,7 +26,7 @@ class SearchVC: UIViewController {
     
     
     func createDismissKeyboardTapGesture() {
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
         view.addGestureRecognizer(tap)
     }
     
@@ -36,21 +36,26 @@ class SearchVC: UIViewController {
             presentGFAlertOnMainThread(title: "Empty Username", message: "Please enter a username.", buttonTitle: "OK")
             return
         }
+        
+        usernameTextField.resignFirstResponder()
+        
         let followerListVC = FollowerListVC() //icerisinde username var
         followerListVC.username = usernameTextField.text
         followerListVC.title = usernameTextField.text
         navigationController?.pushViewController(followerListVC, animated: true) // gecis
     }
     
+    
     override func viewWillAppear(_ animated: Bool) { // eger viewDidLoad'da yapsaydik sadece 1 kere gizlerdi.
         super.viewWillAppear(animated)
+        usernameTextField.text = ""
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     func configureLogoImageView() {
         view.addSubview(logoImageView) // Storyboard'daki surukleyip eklemek gibi
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        logoImageView.image = UIImage(named: "gh-logo")! // eger reuse edecegimiz birseyse bir constant'a atamak iyi olur. typo yaparsak uygulama coker.
+        logoImageView.image = Images.ghLogo
         
         NSLayoutConstraint.activate([ // Cogunlukla 4 constraint e ihtiyacim oluyor.
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
